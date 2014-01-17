@@ -24,25 +24,27 @@ class MovieData
        
      end
      
-    #maps each movie id to its number of ratings
-    #note that each key in the hashes are INTEGER values
+ 
     @listOfRatings.each do |key| 
+        #maps each movie id to its number of ratings
+        #note that each key in the hashes are INTEGER values
         @numberOfRatingsHash[key.movie_id] = @numberOfRatingsHash[key.movie_id] + 1
-        #puts(Integer(key.movie_id))
+        #maps user_id to an array of movie_ids
+        @moviesHash[key.user_id] << (key.movie_id)
+        #puts each movie_id's timestamps into an ARRAY mapped by the movie_id
+        @timestampHash[key.movie_id] << (key.timestamp)
+
     end
 
-    #maps user_id to an array of movie_ids
-    @listOfRatings.each do |key| 
-       @moviesHash[key.user_id] << (key.movie_id)
-    end
 
-
-    #puts each movie_id's timestamps into an ARRAY mapped by the movie_id
-    @listOfRatings.each do |key| 
-       @timestampHash[key.movie_id] << (key.timestamp)
-    end
     
-    #each key is a movie_id that maps to its average timestamp
+     
+  end
+  
+  def popularity(movie_id)
+     
+     
+         #each key is a movie_id that maps to its average timestamp
     @timestampHash.each do |key, value|
        @avgTimestampHash[key] = (@timestampHash[key].inject{ |sum, el| sum + el }.to_f / @timestampHash[key].size) 
     end
@@ -51,11 +53,7 @@ class MovieData
     @avgTimestampHash.each do |key, value|
         @popularityHash[key] = ((@avgTimestampHash[key]  / @scaleAvgTimestamp)) + (@numberOfRatingsHash[key])
     end
-    
      
-  end
-  
-  def popularity(movie_id)
      
      p "Number of Ratings - #{@numberOfRatingsHash[movie_id]}"
      p ""
@@ -76,15 +74,14 @@ class MovieData
   
   def similarity(user1,user2)
     
-    similarity = 0
+    #similarity = 0
     
     @moviesHash[user1].each do |value|
       
       if(@moviesHash[user2].include?(value))
         
-        ratingUser1 = 0
-        ratingUser2 = 0
-        
+        #ratingUser1 = 0
+        #ratingUser2 = 0
         
         @listOfRatings.each do |key|
           
@@ -140,16 +137,6 @@ class MovieData
     
 
     
-    
-  end
-  
-  
-  def get_rating(index) 
-        
-    return "User_id : #{@listOfRatings[index].user_id}"\
-    " , Movie_id : #{@listOfRatings[index].movie_id}"\
-    " , Rating : #{@listOfRatings[index].rating}"\
-    " , Timestamp : #{@listOfRatings[index].timestamp}"
     
   end
    
