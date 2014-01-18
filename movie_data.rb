@@ -11,7 +11,7 @@ class MovieData
     @popularityHash = Hash.new
     @scaleAvgTimestamp = 10000000000 #2 years gives about 6 rating 
     @noRating = 6
-    
+    @similarityHash = Hash.new(0)
     
   end
   
@@ -22,19 +22,20 @@ class MovieData
        
        #user_id- 0, movie_id - 1, rating - 2, timestamp - 3
        dataLine = line.split(" ")
-       #@listOfRatings << Rating.new(Integer(dataLine[0]),Integer(dataLine[1]),Integer(dataLine[2]),Integer(dataLine[3]))
+       
+       #maps user_id to an array of movie_ids (index 0) and an array of ratings (index 1)
+       if @moviesHash[Integer(dataLine[0])][0].nil?
+         @moviesHash[Integer(dataLine[0])][0] = Array.new
+       end
+       @moviesHash[Integer(dataLine[0])][0] << (Integer(dataLine[1]))
+              if @moviesHash[Integer(dataLine[0])][1].nil?
+         @moviesHash[Integer(dataLine[0])][1] = Array.new
+       end
+       @moviesHash[Integer(dataLine[0])][1] << (Integer(dataLine[2]))
        
        #maps each movie id to its number of ratings
        #note that each key in the hashes are INTEGER values
        @numberOfRatingsHash[Integer(dataLine[1])] = @numberOfRatingsHash[Integer(dataLine[1])] + 1
-       
-       #maps user_id to an array of movie_ids and an array of ratings
-       @moviesHash[Integer(dataLine[0])][0] = []
-       @moviesHash[Integer(dataLine[0])][0] << (Integer(dataLine[1]))
-       @moviesHash[Integer(dataLine[0])][1] = []
-       @moviesHash[Integer(dataLine[0])][1] << (Integer(dataLine[2]))
-       #p @moviesHash[Integer(dataLine[0])][0]
-       #p @moviesHash[Integer(dataLine[0])][1]
         
        #puts each movie_id's timestamps into an ARRAY mapped by the movie_id
        @timestampHash[Integer(dataLine[1])] << (Integer(dataLine[3]))
@@ -42,6 +43,7 @@ class MovieData
        
      end
      
+    
     
        #each key is a movie_id that maps to its average timestamp
        @timestampHash.each do |key, value|
@@ -59,7 +61,7 @@ class MovieData
   
   def test()
   
-    p similarity(196,186)
+    #@moviesHash.keys[0..10].each { |key| puts "#{key} => #{@moviesHash[key]}" }
     #p @moviesHash[196][0]
   
   end
@@ -101,8 +103,6 @@ class MovieData
         
       end
       
-      
-        
     end
       
     return similarity
@@ -111,26 +111,27 @@ class MovieData
   
   def most_similar(user)
     
-    similaritiesArray = []
-    
       @moviesHash.each do |key,value|
       
         if user != key
         
-        x = Rating.new(key,2,3,4)
-        
-        x.change_similarity(similarity(user,key))
-        
-        similaritiesArray << x
+        @similarityHash[key] = similarity(user,key)
         
         end
       
       
       end
     
-      a = similaritiesArray.sort_by {|obj| obj.similarity}.reverse
-  
-    p a
+      a = @similarityHash.sort_by {|k,v| v}.reverse
+      
+      b = Array.new
+      
+      for x in 0..9
+      
+        b << a[x].first
+      
+      end
+    return (b)
     
 
     
