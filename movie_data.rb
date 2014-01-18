@@ -17,12 +17,16 @@ class MovieData
   def load_data()
 
    
-     text = File.open('C:\Users\Eddie\Desktop\cosi 236b\ml-100k\u.data').read
-     text.each_line do |line|
+     File.open('C:\Users\Eddie\Desktop\cosi 236b\ml-100k\u.data').read.each_line do |line|
        
-       @listOfRatings << Rating.new(Integer(line.split(" ")[0]),Integer(line.split(" ")[1]),Integer(line.split(" ")[2]),Integer(line.split(" ")[3]))
+       #user_id, movie_id, rating, timestamp
+       dataLine = line.split(" ")
+       @listOfRatings << Rating.new(Integer(dataLine[0]),Integer(dataLine[1]),Integer(dataLine[2]),Integer(dataLine[3]))
+       
+       
        
      end
+     
      
  
     @listOfRatings.each do |key| 
@@ -84,7 +88,6 @@ class MovieData
         #ratingUser2 = 0
         
         @listOfRatings.each do |key|
-          
           
           if((key.movie_id == value) and (key.user_id == user1))
             

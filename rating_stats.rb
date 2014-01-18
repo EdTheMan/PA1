@@ -7,4 +7,4 @@ require_relative 'movie_data'
   #puts(data.get_rating(0))
   
   
-  data.most_similar(196)
+  #data.most_similar(196)
