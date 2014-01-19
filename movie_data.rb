@@ -90,7 +90,7 @@ class MovieData
       
       if(@moviesHash[user2][0].include?(value))
         
-        similarity = similarity + (1.0 / (1.0+ ( \
+        similarity += (1.0 / (1.0+ ( \
         ( \
          (@moviesHash[user1][1][index]) \
         - \
@@ -100,7 +100,7 @@ class MovieData
         
       else
         
-        similarity = similarity + (1.0 / (1.0 + @noRating))
+        similarity += + (1.0 / (1.0 + @noRating))
         
       end
       
