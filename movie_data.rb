@@ -38,6 +38,49 @@ class MovieData
      
     
     
+
+    
+     
+  end
+  
+  def test()
+  
+    #p @popularityHash[196]
+    p popularity_list()
+    #popularity(196)
+
+    #@moviesHash.keys[0..10].each { |key| puts "#{key} => #{@moviesHash[key]}" }
+    #p @moviesHash[196][0]
+  
+  end
+  
+  def popularity(movie_id)     
+     
+     if @popularityHash[movie_id].nil?
+       
+     averageTimeStamp = (@timestampHash[movie_id].inject{ |sum, el| sum + el }.to_f / @timestampHash[movie_id].size)
+     
+     popularity = ((averageTimeStamp  / @scaleAvgTimestamp)) + (@numberOfRatingsHash[movie_id])
+     
+     else
+       
+       popularity = @popularityHash[movie_id]
+       
+     end
+     #p "Number of Ratings - #{@numberOfRatingsHash[movie_id]}"
+     #p ""
+     #p "Average time - #{@avgTimestampHash[movie_id]}"
+     #p ""
+     return popularity
+     #p "Popularity - #{@popularityHash[movie_id]}"
+     #p ""
+      
+
+  end
+  
+  def popularity_list
+
+
        #each key is a movie_id that maps to its average timestamp
        @timestampHash.each do |key, value|
           @avgTimestampHash[key] = (@timestampHash[key].inject{ |sum, el| sum + el }.to_f / @timestampHash[key].size) 
@@ -47,36 +90,9 @@ class MovieData
        @avgTimestampHash.each do |key, value|
           @popularityHash[key] = ((@avgTimestampHash[key]  / @scaleAvgTimestamp)) + (@numberOfRatingsHash[key])
        end
-
-    
-     
-  end
-  
-  def test()
-  
-  
-    p similarity(196,244)
-
-    #@moviesHash.keys[0..10].each { |key| puts "#{key} => #{@moviesHash[key]}" }
-    #p @moviesHash[196][0]
-  
-  end
-  
-  def popularity(movie_id)     
-     
-     #p "Number of Ratings - #{@numberOfRatingsHash[movie_id]}"
-     #p ""
-     #p "Average time - #{@avgTimestampHash[movie_id]}"
-     #p ""
-     p "Popularity - #{@popularityHash[movie_id]}"
-     #p ""
-      
-
-  end
-  
-  def popularity_list
-
-    p (Hash[@popularityHash.sort_by{|k, v| v}.reverse])
+       
+       return Hash[@popularityHash.sort_by{|k, v| v}.reverse].keys
+        
     
   end
   
@@ -90,7 +106,7 @@ class MovieData
       
       if(@moviesHash[user2][0].include?(value))
         
-        similarity += (1.0 / (1.0+ ( \
+        similarity = similarity + (1.0 / (1.0+ ( \
         ( \
          (@moviesHash[user1][1][index]) \
         - \
@@ -100,7 +116,7 @@ class MovieData
         
       else
         
-        similarity += + (1.0 / (1.0 + @noRating))
+        similarity = similarity + (1.0 / (1.0 + @noRating))
         
       end
       
