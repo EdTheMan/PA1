@@ -24,17 +24,10 @@ class MovieData
        dataLine = line.split(" ")
        
        #maps user_id to an array of movie_ids (index 0) and an array of ratings (index 1)
-       if @moviesHash[Integer(dataLine[0])][0].nil?
-         @moviesHash[Integer(dataLine[0])][0] = Array.new
-       end
-       @moviesHash[Integer(dataLine[0])][0] << (Integer(dataLine[1]))
-              if @moviesHash[Integer(dataLine[0])][1].nil?
-         @moviesHash[Integer(dataLine[0])][1] = Array.new
-       end
-       @moviesHash[Integer(dataLine[0])][1] << (Integer(dataLine[2]))
+       (@moviesHash[Integer(dataLine[0])][0] ||= [] ) << (Integer(dataLine[1]))
+       (@moviesHash[Integer(dataLine[0])][1] ||= [] ) << (Integer(dataLine[2]))
        
        #maps each movie id to its number of ratings
-       #note that each key in the hashes are INTEGER values
        @numberOfRatingsHash[Integer(dataLine[1])] = @numberOfRatingsHash[Integer(dataLine[1])] + 1
         
        #puts each movie_id's timestamps into an ARRAY mapped by the movie_id
@@ -61,6 +54,9 @@ class MovieData
   
   def test()
   
+  
+    p similarity(196,244)
+
     #@moviesHash.keys[0..10].each { |key| puts "#{key} => #{@moviesHash[key]}" }
     #p @moviesHash[196][0]
   
@@ -131,7 +127,8 @@ class MovieData
         b << a[x].first
       
       end
-    return (b)
+      
+    return (b.take(10))
     
 
     
