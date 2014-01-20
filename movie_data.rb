@@ -3,15 +3,15 @@ require_relative 'rating'
 class MovieData
   
   def initialize
-    @listOfRatings = []
+    @userHash = Hash.new {|h,k| h[k] = Array.new }
     @numberOfRatingsHash = Hash.new(0)
-    @moviesHash = Hash.new {|h,k| h[k] = Array.new }
     @timestampHash = Hash.new {|h,k| h[k] = Array.new }
     @avgTimestampHash = Hash.new
     @popularityHash = Hash.new
+    @similarityHash = Hash.new(0)
     @scaleAvgTimestamp = 10000000000 #2 years gives about 6 rating 
     @noRating = 6
-    @similarityHash = Hash.new(0)
+    
     
   end
   
@@ -24,8 +24,8 @@ class MovieData
        dataLine = line.split(" ")
        
        #maps user_id to an array of movie_ids (index 0) and an array of ratings (index 1)
-       (@moviesHash[Integer(dataLine[0])][0] ||= [] ) << (Integer(dataLine[1]))
-       (@moviesHash[Integer(dataLine[0])][1] ||= [] ) << (Integer(dataLine[2]))
+       (@userHash[Integer(dataLine[0])][0] ||= [] ) << (Integer(dataLine[1]))
+       (@userHash[Integer(dataLine[0])][1] ||= [] ) << (Integer(dataLine[2]))
        
        #maps each movie id to its number of ratings
        @numberOfRatingsHash[Integer(dataLine[1])] = @numberOfRatingsHash[Integer(dataLine[1])] + 1
@@ -44,13 +44,8 @@ class MovieData
   end
   
   def test()
-  
-    #p @popularityHash[196]
-    p popularity_list()
-    #popularity(196)
-
-    #@moviesHash.keys[0..10].each { |key| puts "#{key} => #{@moviesHash[key]}" }
-    #p @moviesHash[196][0]
+ 
+    p similarity(196,196)
   
   end
   
@@ -60,22 +55,14 @@ class MovieData
        
      averageTimeStamp = (@timestampHash[movie_id].inject{ |sum, el| sum + el }.to_f / @timestampHash[movie_id].size)
      
-     popularity = ((averageTimeStamp  / @scaleAvgTimestamp)) + (@numberOfRatingsHash[movie_id])
+     return ((averageTimeStamp  / @scaleAvgTimestamp)) + (@numberOfRatingsHash[movie_id])
      
      else
        
-       popularity = @popularityHash[movie_id]
+       return @popularityHash[movie_id]
        
      end
-     #p "Number of Ratings - #{@numberOfRatingsHash[movie_id]}"
-     #p ""
-     #p "Average time - #{@avgTimestampHash[movie_id]}"
-     #p ""
-     return popularity
-     #p "Popularity - #{@popularityHash[movie_id]}"
-     #p ""
       
-
   end
   
   def popularity_list
@@ -102,15 +89,15 @@ class MovieData
     similarity = 0
     
     #movie is at index 0 and ratings is at index 1 for the specific movie
-    @moviesHash[user1][0].each_with_index do |value,index|
+    @userHash[user1][0].each_with_index do |value,index|
       
-      if(@moviesHash[user2][0].include?(value))
+      if(@userHash[user2][0].include?(value))
         
         similarity = similarity + (1.0 / (1.0+ ( \
         ( \
-         (@moviesHash[user1][1][index]) \
+         (@userHash[user1][1][index]) \
         - \
-         (@moviesHash[user2][1][@moviesHash[user2][0].index(value)]) \
+         (@userHash[user2][1][@userHash[user2][0].index(value)]) \
          ) \
          .abs)))
         
@@ -128,7 +115,7 @@ class MovieData
   
   def most_similar(user)
     
-      @moviesHash.each do |key,value|
+      @userHash.each do |key,value|
       
         if user != key
         
@@ -136,23 +123,11 @@ class MovieData
         
         end
       
-      
       end
     
-      a = @similarityHash.sort_by {|k,v| v}.reverse
-      
-      b = Array.new
-      
-      for x in 0..9
-      
-        b << a[x].first
-      
-      end
-      
-    return (b.take(10))
+    return (Hash[@similarityHash.sort_by {|k,v| v}.reverse].keys.take(10))
     
 
-    
     
   end
    
