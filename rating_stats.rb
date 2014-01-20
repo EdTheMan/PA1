@@ -4,8 +4,8 @@ require_relative 'movie_data'
   
   data.load_data()
   
-  #p data.similarity(196,244)
+  p data.popularity_list
   
-  data.test()
+  #data.test()
   
-  #p data.most_similar(196)
+  #p data.popularity_list
