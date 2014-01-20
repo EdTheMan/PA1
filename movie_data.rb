@@ -1,9 +1,15 @@
 #Chi Ieong (Eddie) Tai
 #teddy123168@gmail.com
 #1/20/14
-#Pito Salas
+#Pito Salas, COSI 236B
 #This class is used to determine the popularity of a movie and the similarity
 #between users using a text file from the current directory.
+#Popularity is given by the formula (Average timestamp/ SCALEAVERAGETIMESTAMP) + number of ratings
+#whether a movie has good or bad reviews, it could still be considered popular
+#and a movie who is older (smaller timestamp) will usually have more ratings because 
+#more people get a chance to rate it, so give a slight advantage to newer movies based on SCALEAVERAGETIMESTAMP
+#Similarity is given by 1 / 1 + ((rating of user1) - (rating of user2).abs))
+
 
 class MovieData
   
@@ -16,10 +22,11 @@ class MovieData
     @number_of_ratings_hash = Hash.new(0) #hash that maps a movie to the number of rating it has
     @timestamp_hash = Hash.new {|h,k| h[k] = Array.new } #hash that maps movie id to an array of its timestamps of when it was rated.
     @avg_timestamp_hash = Hash.new #hash that maps the movie_id to the average timestamp of when it was rated (see popularity_list())
-    @popularity_hash = Hash.new #hash that maps movie_id to its popular given by the formula (Average timestamp/ @scaleAvgTimestamp) + number of ratings
+    @popularity_hash = Hash.new #hash that maps movie_id to its popular given by the formula (Average timestamp/ SCALEAVERAGETIMESTAMP) + number of ratings
     @similarity_hash = Hash.new(0) #hash that maps a user to a similarity score of another user, similarity = (1 / 1 + ((rating of user1) - (rating of user2).abs))
   end
   
+  #returns void
   def load_data()
      File.readlines('u.data').each do |line|
        
@@ -36,7 +43,6 @@ class MovieData
        @timestamp_hash[Integer(dataLine[1])] << (Integer(dataLine[3]))
   
      end
-     
   end
   
   #takes movie_id (integer) as parameters
@@ -46,12 +52,12 @@ class MovieData
      #gets the average time stamp of a movie_id by getting the timestamp of all ratings and getting the average of that 
      average_time_stamp = (@timestamp_hash[movie_id].inject{ |sum, el| sum + el }.to_f / @timestamp_hash[movie_id].size)
      
-     #returns the popularity given by (Average timestamp/ @scaleAvgTimestamp) + number of ratings
+     #returns the popularity given by (Average timestamp/ SCALEAVERAGETIMESTAMP) + number of ratings
      return ((average_time_stamp  / SCALEAVERAGETIMESTAMP)) + (@number_of_ratings_hash[movie_id])
 
   end
   
-  #returns void
+  #returns the list of popular movies
   def popularity_list
 
        #each key is a movie_id that maps to its average timestamp
@@ -70,7 +76,7 @@ class MovieData
   end
   
   #takes two users (integers) as parameters
-  #returns an float similaritiy
+  #returns a float similarity
   def similarity(user1,user2)
     
     similarity = 0
@@ -84,7 +90,7 @@ class MovieData
         
       else
         
-        similarity = similarity + (1.0 / (1.0 + NORATING)) #if the second user has not rated the movie, then the similarity score is given by (1 / 1 + @noRating)
+        similarity = similarity + (1.0 / (1.0 + NORATING)) #if the second user has not rated the movie, then the similarity score is given by (1 / 1 + NORATING)
         
       end
       
