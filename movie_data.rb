@@ -7,16 +7,17 @@
 #Popularity is given by the formula (Average timestamp/ SCALEAVERAGETIMESTAMP) + number of ratings
 #whether a movie has good or bad reviews, it could still be considered popular
 #and a movie who is older (smaller timestamp) will usually have more ratings because 
-#more people get a chance to rate it, so give a slight advantage to newer movies based on SCALEAVERAGETIMESTAMP
+#more people get a chance to rate it, so give a slight advantage to newer movies based on SCALEAVERAGETIMESTAMP.
 #Similarity is given by 1 / 1 + ((rating of user1) - (rating of user2).abs))
 
 
 class MovieData
   
-   SCALEAVERAGETIMESTAMP = 10000000000 #2 years gives about 6 rating to popularity formula
-   NORATING = 6 #the difference between two ratings if a movie is not yet rated by the user
+  #initializes variables
+  SCALEAVERAGETIMESTAMP = 10000000000 #2 years gives about 6 rating to popularity formula
+  NORATING = 6 #the difference between two ratings if a movie is not yet rated by the user
     
-  #initializes Hashes and variables
+  #initializes Hashes
   def initialize
     @user_hash = Hash.new {|h,k| h[k] = Hash.new } #hash where user maps to a hash that maps movie_id to its rating by the user
     @number_of_ratings_hash = Hash.new(0) #hash that maps a movie to the number of rating it has
