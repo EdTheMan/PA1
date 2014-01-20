@@ -9,7 +9,7 @@ class MovieData
   
    SCALEAVERAGETIMESTAMP = 10000000000 #2 years gives about 6 rating to popularity formula
    NORATING = 6 #the difference between two ratings if a movie is not yet rated by the user
-  
+    
   #initializes Hashes and variables
   def initialize
     @user_hash = Hash.new {|h,k| h[k] = Hash.new } #hash where user maps to a hash that maps movie_id to its rating by the user
@@ -21,7 +21,6 @@ class MovieData
   end
   
   def load_data()
-   
      File.readlines('u.data').each do |line|
        
        #user_id- 0, movie_id - 1, rating - 2, timestamp - 3
@@ -45,10 +44,10 @@ class MovieData
   def popularity(movie_id)     
        
      #gets the average time stamp of a movie_id by getting the timestamp of all ratings and getting the average of that 
-     averageTimeStamp = (@timestamp_hash[movie_id].inject{ |sum, el| sum + el }.to_f / @timestamp_hash[movie_id].size)
+     average_time_stamp = (@timestamp_hash[movie_id].inject{ |sum, el| sum + el }.to_f / @timestamp_hash[movie_id].size)
      
      #returns the popularity given by (Average timestamp/ @scaleAvgTimestamp) + number of ratings
-     return ((averageTimeStamp  / SCALEAVERAGETIMESTAMP)) + (@number_of_ratings_hash[movie_id])
+     return ((average_time_stamp  / SCALEAVERAGETIMESTAMP)) + (@number_of_ratings_hash[movie_id])
 
   end
   
