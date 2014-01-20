@@ -49,7 +49,6 @@ class MovieData
      #returns the popularity given by (Average timestamp/ @scaleAvgTimestamp) + number of ratings
      return ((averageTimeStamp  / @scaleAvgTimestamp)) + (@numberOfRatingsHash[movie_id])
 
-      
   end
   
   #returns void
@@ -68,7 +67,6 @@ class MovieData
        #returns the list of movies from the most popular to the least popular
        return Hash[@popularityHash.sort_by{|k, v| v}.reverse].keys
         
-    
   end
   
   #takes two users (integers) as parameters
