@@ -6,3 +6,5 @@ PA1
 This is PA1 for COSI 236B
 
 movie_data.rb is used to determine the popularity of a movie and the similarity between users using a text file.
+
+rating_stats.rb is used to test movie_data.rb
