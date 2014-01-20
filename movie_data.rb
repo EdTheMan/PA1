@@ -3,7 +3,7 @@ require_relative 'rating'
 class MovieData
   
   def initialize
-    @userHash = Hash.new {|h,k| h[k] = Array.new }
+    @userHash = Hash.new {|h,k| h[k] = Hash.new }
     @numberOfRatingsHash = Hash.new(0)
     @timestampHash = Hash.new {|h,k| h[k] = Array.new }
     @avgTimestampHash = Hash.new
@@ -24,8 +24,9 @@ class MovieData
        dataLine = line.split(" ")
        
        #maps user_id to an array of movie_ids (index 0) and an array of ratings (index 1)
-       (@userHash[Integer(dataLine[0])][0] ||= [] ) << (Integer(dataLine[1]))
-       (@userHash[Integer(dataLine[0])][1] ||= [] ) << (Integer(dataLine[2]))
+       @userHash[Integer(dataLine[0])][Integer(dataLine[1])] = (Integer(dataLine[2]))
+       #(@userHash[Integer(dataLine[0])][1] ||= [] ) << (Integer(dataLine[2]))
+       
        
        #maps each movie id to its number of ratings
        @numberOfRatingsHash[Integer(dataLine[1])] = @numberOfRatingsHash[Integer(dataLine[1])] + 1
@@ -45,7 +46,7 @@ class MovieData
   
   def test()
  
-    p similarity(196,196)
+  p similarity(196,22)
   
   end
   
@@ -89,17 +90,11 @@ class MovieData
     similarity = 0
     
     #movie is at index 0 and ratings is at index 1 for the specific movie
-    @userHash[user1][0].each_with_index do |value,index|
+    @userHash[user1].each do |key, value|
       
-      if(@userHash[user2][0].include?(value))
+      if(@userHash[user2].has_key?(key))
         
-        similarity = similarity + (1.0 / (1.0+ ( \
-        ( \
-         (@userHash[user1][1][index]) \
-        - \
-         (@userHash[user2][1][@userHash[user2][0].index(value)]) \
-         ) \
-         .abs)))
+        similarity = similarity + (1.0 / (1.0+ ((value - (@userHash[user2][key])).abs)))
         
       else
         
