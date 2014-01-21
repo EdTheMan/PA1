@@ -15,7 +15,6 @@ class MovieData
   
   #initializes variables
   SCALEAVERAGETIMESTAMP = 10000000000 #2 years gives about 6 rating to popularity formula
-  NORATING = 6 #the difference between two ratings if a movie is not yet rated by the user
     
   #initializes Hashes
   def initialize
@@ -87,11 +86,7 @@ class MovieData
      
       if(@user_hash[user2].has_key?(key)) #check to see if user2 has rated the movie or not
         
-        similarity = similarity + (1.0 / (1.0+ ((value - (@user_hash[user2][key])).abs))) #if it has then the similarity is given by (1 / 1 + ((rating of user1) - (rating of user2).abs))
-        
-      else
-        
-        similarity = similarity + (1.0 / (1.0 + NORATING)) #if the second user has not rated the movie, then the similarity score is given by (1 / 1 + NORATING)
+        similarity = similarity + (1.0 / (1.0+ ((value - (@user_hash[user2][key])).abs))) #if it has rated the movie then the similarity is given by (1 / 1 + ((rating of user1) - (rating of user2).abs))
         
       end
       

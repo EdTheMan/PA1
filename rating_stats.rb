@@ -4,7 +4,7 @@ require_relative 'movie_data'
   
   data.load_data()
   
-  p data.popularity_list
+  p data.most_similar(196)
   
   #data.test()
   
